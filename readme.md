@@ -10,6 +10,13 @@ This project implements a digital data transmission system using VHDL. The syste
   - Computes and appends a checksum.
   - Implements a Mealy FSM for sequential transmission control.
 
+- **Packet Detector (Rx):**
+  - Continuously monitors the incoming bit stream.
+  - Detects start and end of packets.
+  - Extracts and decodes payload and checksum.
+  - Validates packet integrity using checksum comparison.
+  - Implemented as a Moore FSM.
+
 ## Packet Structure
 
 Each packet consists of the following components:
@@ -24,10 +31,6 @@ Each packet consists of the following components:
 ### Checksum (4 bits)
 - XOR of all data words
 
-## Packet Format
-
-Each packet has the following format:
-[ Start Bit ('1') | ID (4 BCD digits) | Payload (4 BCD digits) | Checksum (4 BCD digits) | End Bit ('0') ]
 
 
 ## FSM Design
@@ -53,23 +56,6 @@ Testbenches are provided to:
 - Stimulate both Tx and Rx modules.
 - Verify end-to-end data integrity.
 - Validate FSM transitions and error handling (e.g., bad checksum).
-
-## Tools Used
-
-- VHDL (IEEE Std 1076-2008)
-- ModelSim / GHDL for simulation
-- GTKWave for waveform analysis
-
-## How to Run
-
-1. Open the project in your VHDL IDE or simulator.
-2. Compile the design files.
-3. Run the testbench for the full system or individual modules.
-4. Analyze waveforms to verify packet transmission and reception.
-
-## License
-
-This project is open-source under the MIT License.
 
 ---
 

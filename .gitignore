@@ -1,0 +1,27 @@
+# Ignore node_modules (for JS projects)
+node_modules/
+
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore build directories
+build/
+dist/
+
+# Ignore IDE project files (e.g., VSCode, IntelliJ, etc.)
+.vscode/
+.idea/
+
+# Ignore MacOS Finder files
+.DS_Store
+
+# Ignore Windows thumbnail cache
+Thumbs.db
+
+# Ignore log files
+*.log
+
+main.tex
+

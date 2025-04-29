@@ -34,7 +34,7 @@ Each packet consists of the following components:
 
 
 ## FSM Design
-
+x
 ### Transmitter (Mealy FSM)
 - Responds to external `start` signal.
 - Sequentially transmits packet fields.

@@ -6,7 +6,7 @@ entity StartGenerator is
     Port (
         clk     : in  std_logic;
         rst     : in  std_logic;
-        mod     : in  std_logic_vector(1 downto 0);
+        my_mod     : in  std_logic_vector(1 downto 0);
         start   : out std_logic_vector(6 downto 0)
     );
 end StartGenerator;
@@ -23,7 +23,7 @@ begin
                 start(0) <= START_BIT_VAL;
                 
                 -- Bits 1-6 depend on mode
-                case mod is
+                case my_mod is
                     when "00" | "01" | "11" => 
                         start(6 downto 1) <= START_CODE_VALID;
                     when "10" =>

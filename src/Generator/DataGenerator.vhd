@@ -7,7 +7,7 @@ entity DataGenerator is
     Port (
         clk     : in  std_logic;
         rst     : in  std_logic;
-        mod     : in  std_logic_vector(1 downto 0);
+        my_mod     : in  std_logic_vector(1 downto 0);
         data    : out std_logic_vector(23 downto 0);
         length  : out integer range 4 to 6
     );
@@ -36,7 +36,7 @@ begin
                 data <= (others => '0');
                 length <= 4;
             else
-                mode_idx := to_integer(unsigned(mod));
+                mode_idx := to_integer(unsigned(my_mod));
                 
                 for i in 0 to 5 loop
                     if i < 6 then
@@ -44,7 +44,7 @@ begin
                     end if;
                 end loop;
                 
-                case mod is
+                case my_mod is
                     when "00" => length <= 4;
                     when "01" => length <= 5;
                     when "10" => length <= 6;

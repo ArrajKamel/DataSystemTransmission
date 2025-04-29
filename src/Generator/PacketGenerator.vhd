@@ -7,7 +7,7 @@ entity PacketGenerator is
     Port (
         clk     : in  std_logic;
         rst     : in  std_logic;
-        mod     : in  std_logic_vector(1 downto 0);
+        my_mod     : in  std_logic_vector(1 downto 0);
         tx_bit  : out std_logic
     );
 end PacketGenerator;
@@ -18,7 +18,7 @@ architecture Behavioral of PacketGenerator is
         Port (
             clk     : in  std_logic;
             rst     : in  std_logic;
-            mod     : in  std_logic_vector(1 downto 0);
+            my_mod     : in  std_logic_vector(1 downto 0);
             start   : out std_logic_vector(6 downto 0)
         );
     end component;
@@ -27,7 +27,7 @@ architecture Behavioral of PacketGenerator is
         Port (
             clk     : in  std_logic;
             rst     : in  std_logic;
-            mod     : in  std_logic_vector(1 downto 0);
+            my_mod     : in  std_logic_vector(1 downto 0);
             data    : out std_logic_vector(23 downto 0);
             length  : out integer range 4 to 6
         );
@@ -41,7 +41,9 @@ architecture Behavioral of PacketGenerator is
         );
     end component;
     
-    signal s_inputs_ready : boolean := false;
+    signal s_inputs_ready : boolean;
+    signal test : boolean; 
+   
 
     component Serializer is
         Port (
@@ -66,7 +68,7 @@ begin
         port map (
             clk     => clk,
             rst     => rst,
-            mod     => mod,
+            my_mod     => my_mod,
             start   => s_start_seg
         );
     
@@ -74,7 +76,7 @@ begin
         port map (
             clk     => clk,
             rst     => rst,
-            mod     => mod,
+            my_mod     => my_mod,
             data    => s_data_seg,
             length  => s_data_len
         );
@@ -86,9 +88,10 @@ begin
             sum     => s_checksum
         );
 
-    s_inputs_ready <= (s_start_seg /= "0000000" and s_data_seg /= (others => '0') and s_checksum /= "0000");
+    s_inputs_ready <= (s_start_seg /= "0000000") and (s_data_seg /= "000000000000000000000000") and (s_checksum  /= "0000");
+    
 
-    SERIALIZER: Serializer
+    MySERIALIZER: entity work.Serializer
         port map (
             clk     => clk,
             rst     => rst,

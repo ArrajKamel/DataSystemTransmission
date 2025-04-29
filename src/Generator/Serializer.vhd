@@ -10,7 +10,7 @@ entity Serializer is
         data         : in  std_logic_vector(23 downto 0);
         length       : in  integer range 4 to 6;
         sum          : in  std_logic_vector(3 downto 0);
-        inputs_ready : in  std_logic;
+        inputs_ready : in  boolean;
         tx_bit       : out std_logic
     );
 end Serializer;

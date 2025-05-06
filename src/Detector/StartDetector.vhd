@@ -16,19 +16,35 @@ architecture Behavioral of StartDetector is
 
     type state_type is (IDLE, CHECK_START_BIT, CHECK_START_CODE, VALID_START);
     signal state : state_type;
-    signal s_shift_reg : std_logic_vector(5 downto 0):= (others => '0');
+    signal s_shift_reg : std_logic_vector(5 downto 0) := (others => '0');
     signal s_bit_counter : integer range 0 to 5;
     
 begin
-    process(clk)
+
+    -- Shift register process
+    shift_reg_proc: process(clk)
+    begin
+        if rising_edge(clk) then
+            if rst = '1' then
+                s_shift_reg <= (others => '0');
+                s_bit_counter <= 0;
+            else
+                if state = CHECK_START_BIT then
+                    s_shift_reg <= s_shift_reg(4 downto 0) & rx_bit;
+                    s_bit_counter <= s_bit_counter + 1;
+                end if;
+            end if;
+        end if;
+    end process;
+
+    -- Main state machine process
+    main_proc: process(clk)
     begin
         if rising_edge(clk) then
             if rst = '1' then
                 state <= IDLE;
                 start_detected <= '0';
                 data_ready <= '0';
-                s_shift_reg <= (others => '0');
-                s_bit_counter <= 0;
             else
                 case state is
                     when IDLE =>
@@ -37,17 +53,12 @@ begin
                         if rx_bit = START_BIT_VAL then
                             state <= CHECK_START_BIT;
                         end if;
-                    
+
                     when CHECK_START_BIT =>
-                        -- First bit was '0', now collect next 6 bits
-                        s_shift_reg <= s_shift_reg(4 downto 0) & rx_bit;
-                        s_bit_counter <= s_bit_counter + 1;
-                        
                         if s_bit_counter = 5 then
                             state <= CHECK_START_CODE;
-                            s_bit_counter <= 0;
                         end if;
-                    
+
                     when CHECK_START_CODE =>
                         if s_shift_reg = START_CODE_VALID then
                             state <= VALID_START;
@@ -56,11 +67,12 @@ begin
                         else
                             state <= IDLE;
                         end if;
-                    
+
                     when VALID_START =>
                         state <= IDLE;
                 end case;
             end if;
         end if;
     end process;
+
 end Behavioral;

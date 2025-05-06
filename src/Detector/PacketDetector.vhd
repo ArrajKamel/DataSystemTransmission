@@ -57,7 +57,7 @@ architecture Behavioral of PacketDetector is
     signal s_collected_data : std_logic_vector(23 downto 0);
     signal s_collected_len  : integer range 4 to 6;
     signal s_collecting     : std_logic;
-    signal checksum_valid : std_logic;
+    signal s_checksum_valid : std_logic;
 
 begin
     -- Instantiate subcomponents
@@ -89,11 +89,11 @@ begin
             data_len    => s_collected_len,
             rx_bit      => rx_bit,
             collecting  => s_collecting,
-            checksum_ok => checksum_valid
+            checksum_ok => s_checksum_valid
         );
     
     -- Output assignments
     SS <= start_detected;
-    SM <= collecting;
-    SC <= checksum_valid when not collecting else '0';
+    SM <= s_collecting;
+    SC <= s_checksum_valid when not s_collecting else '0';
 end Behavioral;

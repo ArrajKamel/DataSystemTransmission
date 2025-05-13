@@ -10,7 +10,9 @@ entity ChecksumValidator is
         data_len    : in  integer range 4 to 6;
         rx_bit      : in  std_logic;
         collecting  : in  std_logic;
+        data_ready  : in std_logic; 
         checksum_ok : out std_logic
+       
     );
 end ChecksumValidator;
 
@@ -34,20 +36,20 @@ begin
     process(clk)
     begin
         if rising_edge(clk) then
-            if rst = '1' or collecting = '1' then
+            if rst = '1' or collecting = '1' or data_ready = '0' then
                 received_sum <= (others => '0');
                 bit_counter <= 0;
-                checksum_ok <= '0';
             else
                 if bit_counter < 4 then
                     received_sum(bit_counter) <= rx_bit;
                     bit_counter <= bit_counter + 1;
-                    
-                    if bit_counter = 3 then
-                        checksum_ok <= '1' when received_sum = computed_sum else '0';
-                    end if;
                 end if;
             end if;
         end if;
     end process;
+    
+    checksum_ok <=   '1' when bit_counter = 3 and received_sum = computed_sum else
+                     '0' when rst = '1' or collecting = '1' or data_ready = '0' else
+                     '0' ; 
+
 end Behavioral;

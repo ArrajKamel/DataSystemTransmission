@@ -47,6 +47,7 @@ architecture Behavioral of PacketDetector is
             data_len    : in  integer range 4 to 6;
             rx_bit     : in  std_logic;
             collecting  : in  std_logic;
+            data_ready  : in std_logic; 
             checksum_ok : out std_logic
         );
     end component;
@@ -57,17 +58,18 @@ architecture Behavioral of PacketDetector is
     signal s_collected_data : std_logic_vector(23 downto 0);
     signal s_collected_len  : integer range 4 to 6;
     signal s_collecting     : std_logic;
+    signal s_data_ready     : std_logic;
     signal s_checksum_valid : std_logic;
 
 begin
     -- Instantiate subcomponents
     START_DET: StartDetector
         port map (
-            clk     => clk,
-            rst     => rst,
-            rx_bit  => rx_bit,
-            start_detected => start_detected,
-            data_ready    => data_ready
+            clk              => clk,
+            rst              => rst,
+            rx_bit           => rx_bit,
+            start_detected   => start_detected,
+            data_ready       => s_data_ready
         );
     
     DATA_COLL: DataCollector
@@ -75,10 +77,10 @@ begin
             clk         => clk,
             rst         => rst,
             rx_bit      => rx_bit,
-            data_ready  => data_ready,
+            data_ready  => s_data_ready,
             data_out    => s_collected_data,
             data_len    => s_collected_len,
-            collecting => s_collecting
+            collecting  => s_collecting
         );
     
     CHECKSUM_VAL: ChecksumValidator
@@ -89,11 +91,12 @@ begin
             data_len    => s_collected_len,
             rx_bit      => rx_bit,
             collecting  => s_collecting,
+            data_ready  => s_data_ready, 
             checksum_ok => s_checksum_valid
         );
     
     -- Output assignments
     SS <= start_detected;
     SM <= s_collecting;
-    SC <= s_checksum_valid when not s_collecting else '0';
+    SC <= s_checksum_valid when  s_collecting = '0' and s_data_ready = '1' else '0';
 end Behavioral;

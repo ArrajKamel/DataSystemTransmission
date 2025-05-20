@@ -9,11 +9,13 @@ entity DataTransmissionSystem is
         mod  : in  std_logic_vector(1 downto 0);
         SS   : out std_logic; -- Start Detected
         SM   : out std_logic; -- Message In Progress
-        SC   : out std_logic  -- Checksum Valid
+        SC   : out std_logic ; -- Checksum Valid;
+        data_line_debug : out std_logic  -- << Add this
     );
 end DataTransmissionSystem;
 
 architecture Structural of DataTransmissionSystem is
+    
     signal data_line : std_logic; -- the bridge between generator and detector
     
     component PacketGenerator is
@@ -54,4 +56,6 @@ begin
             SM      => SM,
             SC      => SC
         );
+
+    data_line_debug <= data_line; -- expose internal signal
 end Structural;
